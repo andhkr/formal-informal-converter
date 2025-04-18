@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Formal to Informal Text Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .text-area {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+        }
+        textarea {
+            flex: 1;
+            height: 200px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        h1 {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Formal to Informal Text Converter</h1>
+    <div class="container">
+        <div class="text-area">
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 10px;">
+                <h3>Formal Text</h3>
+                <textarea id="formal-text" placeholder="Enter formal text here..."></textarea>
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 10px;">
+                <h3>Informal Text</h3>
+                <textarea id="informal-text" readonly placeholder="Informal text will appear here..."></textarea>
+            </div>
+        </div>
+        <button id="convert-btn">Convert to Informal</button>
+    </div>
+
+    <script>
+        document.getElementById('convert-btn').addEventListener('click', async () => {
+            const formalText = document.getElementById('formal-text').value;
+            if (!formalText) {
+                alert('Please enter some formal text');
+                return;
+            }
+
+            try {
+                document.getElementById('convert-btn').disabled = true;
+                document.getElementById('convert-btn').innerText = 'Converting...';
+                
+                const response = await fetch('/convert', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({text: formalText}),
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('informal-text').value = data.informal_text;
+                } else {
+                    alert(data.error || 'An error occurred');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                document.getElementById('convert-btn').disabled = false;
+                document.getElementById('convert-btn').innerText = 'Convert to Informal';
+            }
+        });
+    </script>
+</body>
+</html>
