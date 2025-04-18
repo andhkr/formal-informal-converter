@@ -28,7 +28,7 @@ cd formal-to-informal-converter
 
 2. Install the required dependencies:
 ```bash
-pip install torch transformers pandas numpy nltk rouge_score scikit-learn tqdm flask matplotlib seaborn
+pip install -r requirements.txt
 ```
 
 3. Download the required NLTK resources:
