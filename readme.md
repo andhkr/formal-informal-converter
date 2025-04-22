@@ -95,7 +95,7 @@ Where `<mode>` can be:
 To train a model from scratch:
 
 ```bash
-python complete_pipeline.py --mode train --data_path your_dataset.csv --num_epochs 5
+python complete_pipeline.py --language hindi --mode train --data_path your_dataset.csv --num_epochs 5
 ```
 
 Training will:
@@ -175,6 +175,7 @@ Then open a browser and navigate to http://127.0.0.1:5000/
 | `--learning_rate` | Learning rate for optimizer | 1e-4 |
 | `--save_steps` | Save model every X steps | 100 |
 | `--num_examples` | Number of examples to show during evaluation | 5 |
+|`--language` | Name of Language on Which you train model | english |
 
 ## Output Files
 

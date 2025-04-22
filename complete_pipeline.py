@@ -1,7 +1,7 @@
 import os
 import argparse
 import torch
-from transformers import T5ForConditionalGeneration, T5Tokenizer, Adafactor
+from transformers import T5ForConditionalGeneration, T5Tokenizer, Adafactor,MT5Tokenizer, MT5ForConditionalGeneration
 
 # Import functions from our scripts
 from data_preparation import prepare_data
@@ -16,22 +16,38 @@ def main(args):
     # Create directories
     os.makedirs(args.save_dir, exist_ok=True)
     
-    # Load model and tokenizer
-    if args.mode == "train" or args.mode == "full":
-        print(f"Loading {args.model_name} model and tokenizer...")
-        tokenizer = T5Tokenizer.from_pretrained(args.model_name)
-        model = T5ForConditionalGeneration.from_pretrained(args.model_name)
+    if args.language == "hindi":
+        # Load model and tokenizer
+        if args.mode == "train" or args.mode == "full":
+            print(f"Loading {args.model_name} model and tokenizer...")
+            tokenizer = MT5Tokenizer.from_pretrained(args.model_name)
+            model = MT5ForConditionalGeneration.from_pretrained(args.model_name)
+        else:
+            print(f"Loading model from {args.model_path}...")
+            try:
+                tokenizer = MT5Tokenizer.from_pretrained(args.model_path)
+                model = MT5ForConditionalGeneration.from_pretrained(args.model_path)
+            except Exception as e:
+                print(f"Error loading model: {e}")
+                print(f"Falling back to {args.model_name}...")
+                tokenizer = MT5Tokenizer.from_pretrained(args.model_name)
+                model = MT5ForConditionalGeneration.from_pretrained(args.model_name)
     else:
-        print(f"Loading model from {args.model_path}...")
-        try:
-            tokenizer = T5Tokenizer.from_pretrained(args.model_path)
-            model = T5ForConditionalGeneration.from_pretrained(args.model_path)
-        except Exception as e:
-            print(f"Error loading model: {e}")
-            print(f"Falling back to {args.model_name}...")
+        # Load model and tokenizer
+        if args.mode == "train" or args.mode == "full":
+            print(f"Loading {args.model_name} model and tokenizer...")
             tokenizer = T5Tokenizer.from_pretrained(args.model_name)
             model = T5ForConditionalGeneration.from_pretrained(args.model_name)
-    
+        else:
+            print(f"Loading model from {args.model_path}...")
+            try:
+                tokenizer = T5Tokenizer.from_pretrained(args.model_path)
+                model = T5ForConditionalGeneration.from_pretrained(args.model_path)
+            except Exception as e:
+                print(f"Error loading model: {e}")
+                print(f"Falling back to {args.model_name}...")
+                tokenizer = T5Tokenizer.from_pretrained(args.model_name)
+                model = T5ForConditionalGeneration.from_pretrained(args.model_name)
     model.to(device)
     
     # Prepare data
@@ -89,6 +105,8 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Formal to Informal Text Conversion Pipeline")
     
+    parser.add_argument("--language", type=str, default="english",
+                        help="Name of language on Train model")
     parser.add_argument("--mode", type=str, default="full", choices=["train", "evaluate", "interactive", "full"],
                         help="Pipeline mode: train, evaluate, interactive, or full")
     parser.add_argument("--data_path", type=str, default="formal_informal_dataset.csv",
