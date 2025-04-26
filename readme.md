@@ -40,15 +40,16 @@ python -c "import nltk; nltk.download('wordnet'); nltk.download('punkt')"
 
 ```
 formal-to-informal-converter/
-├── data_preparation.py        # Script for preparing dataset
-├── model_training.py          # Script for model training
-├── model_evaluation.py        # Script for evaluating model
-├── complete_pipeline.py       # Main pipeline script
-├── web_demo.py                # Simple web interface for the model
-├── templates/                 # Web templates directory
-│   └── index.html             # Web interface HTML
-├── model_checkpoints/         # Directory for saved models
-└── README.md                  # This file
+├── data_preparation.py             # Script for preparing dataset
+├── model_training.py               # Script for model training
+├── model_evaluation.py             # Script for evaluating model
+├── complete_pipeline.py            # Main pipeline script
+├── alternate_hindi_pipeline.ipynb  # Alternate Pipeline for Hindi
+├── web_demo.py                     # Simple web interface for the model
+├── templates/                      # Web templates directory
+│   └── index.html                  # Web interface HTML
+├── model_checkpoints/              # Directory for saved models
+└── README.md                       # This file
 ```
 
 ## Dataset Requirements
@@ -81,21 +82,28 @@ The `complete_pipeline.py` script is the main entry point that ties together all
 #### Basic Usage
 
 ```bash
-python complete_pipeline.py --mode <mode> --data_path <path_to_dataset>
+python complete_pipeline.py --mode <mode> --data_path <path_to_dataset> --language <language> 
 ```
 
-Where `<mode>` can be:
+where 
+
+1. `language` can be:
+- `hindi`
+- `english`
+
+2. `<mode>` can be:
 - `train`: Only train the model
 - `evaluate`: Only evaluate an existing model
 - `interactive`: Start an interactive session to test the model
 - `full`: Run the complete pipeline (data prep → training → evaluation)
+
 
 ### Training
 
 To train a model from scratch:
 
 ```bash
-python complete_pipeline.py --language hindi --mode train --data_path your_dataset.csv --num_epochs 5
+python complete_pipeline.py --language hindi --mode train --data_path your_dataset.csv --num_epochs 5 --model_name google/mt5-small
 ```
 
 Training will:
@@ -131,35 +139,6 @@ python complete_pipeline.py --mode interactive --model_path model_checkpoints/be
 
 This will start a command-line interface where you can enter formal text and get the informal conversion in real-time.
 
-### Web Demo
-
-To start the web interface:
-
-```bash
-python web_demo.py
-```
-
-This will:
-1. Create a Flask web server
-2. Load your trained model (or fall back to a default model if yours isn't found)
-3. Create a templates directory and index.html file if they don't exist
-4. Start a local server at http://127.0.0.1:5000/
-
-Then open a browser and navigate to http://127.0.0.1:5000/ to interact with your model through a simple web interface.
-
-The web interface allows you to:
-- Enter formal text in the left text area
-- Click "Convert to Informal" button 
-- See the generated informal text in the right text area
-
-If you want to modify the web interface, you can edit the HTML file at `templates/index.html`.
-
-**Note**: The web demo requires Flask to be installed. If you haven't installed it yet, run:
-```bash
-pip install flask
-```
-
-Then open a browser and navigate to http://127.0.0.1:5000/
 
 ## Command Line Arguments
 

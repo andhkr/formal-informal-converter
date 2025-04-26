@@ -1,3 +1,4 @@
+from matplotlib import cm
 import torch
 import numpy as np
 from tqdm import tqdm
@@ -106,16 +107,6 @@ def evaluate_model(model, tokenizer, test_df, device, num_examples=5, max_length
     for metric, value in avg_metrics.items():
         print(f"{metric}: {value:.4f}")
     
-    # Create a visualization of the metrics
-    plt.figure(figsize=(10, 6))
-    sns.barplot(x=list(avg_metrics.keys()), y=list(avg_metrics.values()))
-    plt.title("Evaluation Metrics")
-    plt.xlabel("Metric")
-    plt.ylabel("Score")
-    plt.tight_layout()
-    plt.savefig("evaluation_metrics.png")
-    plt.close()
-    
     # Save results to CSV
     results_df = pd.DataFrame(generated_texts)
     results_df.to_csv("generation_results.csv", index=False)
@@ -123,6 +114,27 @@ def evaluate_model(model, tokenizer, test_df, device, num_examples=5, max_length
     # Save metrics to CSV
     metrics_df = pd.DataFrame([avg_metrics])
     metrics_df.to_csv("evaluation_metrics.csv", index=False)
+    
+    values = list(avg_metrics.values())
+    # Normalize the number of bars to 0–1 range for the colormap
+    norm = plt.Normalize(min(values), max(values))
+
+    # Choose a colormap
+    cmap = cm.viridis  # You can use 'plasma', 'coolwarm', 'inferno', etc.
+
+    # Generate a list of colors from the colormap
+    colors = [cmap(norm(value)) for value in values]
+
+    # Create a visualization of the metrics
+    plt.figure(figsize=(10, 6))
+    sns.barplot(x=list(avg_metrics.keys()), y=values, palette= colors)
+    plt.title("Evaluation Metrics")
+    plt.xlabel("Metric")
+    plt.ylabel("Score")
+    plt.tight_layout()
+    plt.savefig("evaluation_metrics.png")
+    plt.close()
+    
     
     return avg_metrics, generated_texts
 

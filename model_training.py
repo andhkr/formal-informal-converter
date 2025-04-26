@@ -60,10 +60,10 @@ def train_model(
             
             # Save checkpoint
             if global_step % save_steps == 0:
-                model_save_path = os.path.join(save_dir, f"checkpoint-{global_step}")
-                model.save_pretrained(model_save_path)
-                tokenizer.save_pretrained(model_save_path)
-                print(f"\nCheckpoint saved to {model_save_path}")
+                # model_save_path = os.path.join(save_dir, f"checkpoint-{global_step}")
+                # model.save_pretrained(model_save_path)
+                # tokenizer.save_pretrained(model_save_path)
+                # print(f"\nCheckpoint saved to {model_save_path}")
                 
                 # Run validation
                 val_loss = evaluate(model, val_dataloader, device)
