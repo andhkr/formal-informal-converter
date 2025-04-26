@@ -22,7 +22,7 @@ var/
 
 # Model checkpoints and data
 model_checkpoints/
-*.csv
+/*.csv
 *.tsv
 *.pt
 *.bin
